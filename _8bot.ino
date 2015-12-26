@@ -5,7 +5,7 @@ Servo dx_servo;
 Servo sx_servo;
 
 const int dx_pin = 8;
-const int sx_pin = 7;
+const int sx_pin = 9;
 int fd_spd_dx = 180;
 int bk_spd_dx = 0;
 int fd_spd_sx = 0;
