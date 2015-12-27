@@ -6,17 +6,17 @@ Servo sx_servo;
 
 const int dx_pin = 8;
 const int sx_pin = 9;
-int fd_spd_dx = 180;
-int bk_spd_dx = 0;
-int fd_spd_sx = 0;
-int bk_spd_sx = 180;
+int fd_spd_dx = 180; //initial values
+int bk_spd_dx = 0;   //180 is full forward, 0 full backward
+int fd_spd_sx = 0;   //stop is somewhere in the middle 
+int bk_spd_sx = 180; //but the motors keep running
 
 void setup() {
   Serial.begin(9600);
   Serial.println("READY");
   if (EEPROM.read(4) == 1) {
-    fd_spd_dx = EEPROM.read(0);
-    bk_spd_dx = EEPROM.read(1);
+    fd_spd_dx = EEPROM.read(0);//reserve 4 bytes 
+    bk_spd_dx = EEPROM.read(1);//for saved calibration
     fd_spd_sx = EEPROM.read(2);
     bk_spd_sx = EEPROM.read(3);
   }
@@ -24,9 +24,9 @@ void setup() {
 
 void loop() {
   if(Serial.available()){
-    char command = Serial.read();
-    if (command == 's') {
-      turnOnServo();
+    char command = Serial.read(); //every command is a char
+    if (command == 's') {         //it is possible to write to  the bot
+      turnOnServo();              //using a keyboard
       dx_servo.write(fd_spd_dx);
       sx_servo.write(fd_spd_sx);
     } else if (command == 'd') {
@@ -41,8 +41,8 @@ void loop() {
       turnOnServo();
       dx_servo.write(bk_spd_dx);
       sx_servo.write(fd_spd_sx);
-    } else if (command == 'y') {
-      if (fd_spd_dx < 180) {
+    } else if (command == 'y') { //calibration is not quite implemented yet
+      if (fd_spd_dx < 180) {     //but it works somehow
         fd_spd_dx ++;        
       }
       Serial.println(fd_spd_dx);
@@ -81,7 +81,7 @@ void loop() {
         bk_spd_sx --;        
       }
       Serial.println(bk_spd_sx);
-    } else if (command == 'z') {
+    } else if (command == 'z') { //save calibration into eeprom
       EEPROM.update(0,fd_spd_dx);
       EEPROM.update(1,bk_spd_dx); 
       EEPROM.update(2,fd_spd_sx);
@@ -89,7 +89,7 @@ void loop() {
       EEPROM.update(4,1);
       Serial.println("OK");
     } else {
-      stopServo(); 
+      stopServo(); //if the serial is empty, stop the motors
     }
   }
 }
