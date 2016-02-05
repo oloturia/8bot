@@ -89,7 +89,7 @@ void loop() {
       EEPROM.update(4,1);
       Serial.println("OK");
     } else {
-      stopServo(); //if the serial is empty, stop the motors
+      stopServo(); //if the serial is any other char, stop the motors
     }
   }
 }
